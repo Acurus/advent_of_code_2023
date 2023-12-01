@@ -15,14 +15,13 @@ class Numbers(Enum):
 
 
 def get_calibration(input: list[str]) -> list[int]:
-    with open("fasit.txt", "r") as f:
-        calibration = []
-        for line in input:
-            digits_in_line = digits(line)
-            digits_in_line.update(digits_spelled_out(line))
-            number = min(digits_in_line.items(), key=lambda x: x[0])[1]
-            number += max(digits_in_line.items(), key=lambda x: x[0])[1]
-            calibration.append(int(number))
+    calibration = []
+    for line in input:
+        digits_in_line = digits(line)
+        digits_in_line.update(digits_spelled_out(line))
+        number = min(digits_in_line.items(), key=lambda x: x[0])[1]
+        number += max(digits_in_line.items(), key=lambda x: x[0])[1]
+        calibration.append(int(number))
     return calibration
 
 
