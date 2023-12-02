@@ -48,9 +48,12 @@ class Game:
 
     def fewest_number_of_cubes(self) -> CubeCollection:
         fewest_cubes = CubeCollection()
-        fewest_cubes.add_cubes(Color.red, max(self.sets, key=lambda x: x.red).red)
-        fewest_cubes.add_cubes(Color.green, max(self.sets, key=lambda x: x.green).green)
-        fewest_cubes.add_cubes(Color.blue, max(self.sets, key=lambda x: x.blue).blue)
+        fewest_cubes.add_cubes(Color.red, max(
+            self.sets, key=lambda x: x.red).red)
+        fewest_cubes.add_cubes(Color.green, max(
+            self.sets, key=lambda x: x.green).green)
+        fewest_cubes.add_cubes(Color.blue, max(
+            self.sets, key=lambda x: x.blue).blue)
         return fewest_cubes
 
     def _game_id_from_string(self) -> int:
@@ -94,7 +97,7 @@ def play_game_part1(input_data: list[str], bag: CubeCollection):
     return sum
 
 
-def play_game_part2(input_data: list[str], bag: CubeCollection):
+def play_game_part2(input_data: list[str]):
     games = read_input(input_data)
     sum = 0
     for game in games:
