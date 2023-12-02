@@ -70,7 +70,7 @@ class TestDay2(unittest.TestCase):
         bag.green = 13
         bag.blue = 14
         # Act
-        sum = play_game_part2(input_data, bag)
+        sum = play_game_part2(input_data)
 
         # Assert
         self.assertEqual(sum, 2286)

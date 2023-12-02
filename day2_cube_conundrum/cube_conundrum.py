@@ -73,12 +73,12 @@ class Game:
         return game_sets
 
 
-def game_is_possible(bag: CubeCollection, game: Game) -> bool:
-    for game_set in game.sets:
-        if game_set > bag:
-            print(f"{game.id} is impossible")
-            return False
-    return True
+    def is_possible(self, bag: CubeCollection) -> bool:
+        for game_set in self.sets:
+            if game_set > bag:
+                print(f"{self.id} is impossible")
+                return False
+        return True
 
 
 def read_input(input_data: list[str]) -> list[Game]:
@@ -92,7 +92,7 @@ def play_game_part1(input_data: list[str], bag: CubeCollection):
     games = read_input(input_data)
     sum = 0
     for game in games:
-        if game_is_possible(bag, game):
+        if game.is_possible(bag):
             sum += game.id
     return sum
 
@@ -113,4 +113,4 @@ if __name__ == '__main__':
     with open("day2_cube_conundrum\input.txt", "r") as input:
         data = input.readlines()
         print(f"Part 1 sum: {play_game_part1(data, bag)}")
-        print(f"Part 2 sum: {play_game_part2(data, bag)}")
+        print(f"Part 2 sum: {play_game_part2(data)}")
