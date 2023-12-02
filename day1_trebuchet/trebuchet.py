@@ -43,6 +43,6 @@ def digits_spelled_out(line: str) -> dict[int, str]:
    
 
 if __name__ == '__main__':
-    with open("input.txt", "r") as input:
+    with open("day1_trebuchet\input.txt", "r") as input:
         calibration_values = get_calibration(input.readlines())
     print(sum(calibration_values))
