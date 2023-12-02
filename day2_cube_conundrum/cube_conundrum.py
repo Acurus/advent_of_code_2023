@@ -46,6 +46,13 @@ class Game:
         self.id = self._game_id_from_string()
         self.sets = self._game_sets_from_string()
 
+    def is_possible(self, bag: CubeCollection) -> bool:
+        for game_set in self.sets:
+            if game_set > bag:
+                print(f"{self.id} is impossible")
+                return False
+        return True
+
     def fewest_number_of_cubes(self) -> CubeCollection:
         fewest_cubes = CubeCollection()
         fewest_cubes.add_cubes(Color.red, max(
@@ -71,14 +78,6 @@ class Game:
                 game_set.add_cubes(Color[color], int(amount))
             game_sets.append(game_set)
         return game_sets
-
-
-    def is_possible(self, bag: CubeCollection) -> bool:
-        for game_set in self.sets:
-            if game_set > bag:
-                print(f"{self.id} is impossible")
-                return False
-        return True
 
 
 def read_input(input_data: list[str]) -> list[Game]:
