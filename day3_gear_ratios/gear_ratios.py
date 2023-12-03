@@ -68,7 +68,7 @@ class Engine:
                 part.is_valid = True
                 return
         except IndexError:
-            print(max_col, max_row)
+            print(f"Index Error: {max_col, max_row}")
     
     def _check_for_symbol(self, s: str):
         return any([char in self.symbols for char in s])
