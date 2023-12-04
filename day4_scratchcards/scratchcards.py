@@ -44,10 +44,10 @@ def run_part_2(cards: list[ScratchCard]):
     cards_to_process = {x.id: [x] for x in cards}
 
     for card_id in cards_to_process.keys():
-        for c in cards_to_process[card_id]:
-            for j in range(1, c.number_of_wins+1):
+        for card in cards_to_process[card_id]:
+            for i in range(1, card.number_of_wins+1):
                 try:
-                    cards_to_process[card_id+j].append(cards_to_process[card_id+j][0])
+                    cards_to_process[card_id+i].append(cards_to_process[card_id+i][0])
                 except KeyError:
                     pass
 
