@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "day5_if_you_give_a_seed_a_fertilizer", "day5_if_you_give_a_seed_a_fertilizer.csproj", "{F6578D27-ECA4-40DB-BF48-B20021C9CBC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "day5_if_you_give_a_seed_a_fertilizer", "day5_if_you_give_a_seed_a_fertilizer\day5_if_you_give_a_seed_a_fertilizer.csproj", "{F01B8C02-5E33-4E44-A56D-18BDDECCDDF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{5DE8E519-E63B-4BE3-AC7A-48A8B29C2EB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +10,13 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F6578D27-ECA4-40DB-BF48-B20021C9CBC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6578D27-ECA4-40DB-BF48-B20021C9CBC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6578D27-ECA4-40DB-BF48-B20021C9CBC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6578D27-ECA4-40DB-BF48-B20021C9CBC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F01B8C02-5E33-4E44-A56D-18BDDECCDDF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F01B8C02-5E33-4E44-A56D-18BDDECCDDF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F01B8C02-5E33-4E44-A56D-18BDDECCDDF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F01B8C02-5E33-4E44-A56D-18BDDECCDDF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DE8E519-E63B-4BE3-AC7A-48A8B29C2EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DE8E519-E63B-4BE3-AC7A-48A8B29C2EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DE8E519-E63B-4BE3-AC7A-48A8B29C2EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DE8E519-E63B-4BE3-AC7A-48A8B29C2EB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
