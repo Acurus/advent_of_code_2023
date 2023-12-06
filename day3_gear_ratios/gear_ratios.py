@@ -61,16 +61,6 @@ class Engine:
                     continue
         return possible_parts
 
-    def find_gears(self) -> list[Gear]:
-        gears = []
-        for i, row in enumerate(self.input_data):
-            for j, char in enumerate(row):
-                if char == '*':
-                    gear = self._find_gear(i, j)
-                    if gear:
-                        gears.append(gear)
-        return gears
-
     def _validate_part(self, part: Part) -> None:
         row = part.start_position[0]
         min_row = max(part.start_position[0]-1, 0)
@@ -94,37 +84,46 @@ class Engine:
         except IndexError:
             print(f"Index Error: {max_col, max_row}")
 
+    def _check_for_symbol(self, s: str):
+        return any([char in self.symbols for char in s])
+
+    def find_gears(self) -> list[Gear]:
+        gears = []
+        for i, row in enumerate(self.input_data):
+            for j, char in enumerate(row):
+                if char == '*':
+                    gear = self._find_gear(i, j)
+                    if gear:
+                        gears.append(gear)
+        return gears
+
     def _find_gear(self, row, col):
         parts = []
         for part in self.parts:
             is_adjecent = self._position_is_adjecent(row, col, part)
             if is_adjecent:
                 parts.append(part)
-        if len(parts) ==2:
+        if len(parts) == 2:
             return Gear(parts)
         else:
             return None
 
-    def _check_for_symbol(self, s: str):
-        return any([char in self.symbols for char in s])
-
     def _position_is_adjecent(self, row, col, part: Part) -> bool:
 
-        min_start_row = max(part.start_position[0]-1, 0)
-        min_start_col = max(part.start_position[1]-1, 0)
-        max_start_row = min(part.start_position[0]+1, len(self.input_data)-1)
-        max_start_col = min(part.end_position[1]+1, len(self.input_data[0])-1)
+        row_above = max(part.start_position[0]-1, 0)
+        row_below = min(part.start_position[0]+1, len(self.input_data)-1)
+        
+        col_before_min = max(part.start_position[1]-1, 0)
+        col_after_max  = min(part.end_position[1]+1, len(self.input_data[0])-1)
 
-        max_end_col = min(part.end_position[1]+1, len(self.input_data[0])-1)
-
-        if part.start_position[0] == row and (min_start_row == col
-                                              or max_start_col == col):
+        if part.start_position[0] == row and (col_before_min == col
+                                              or col_after_max == col):
             return True
-        elif min_start_row == row and (col >=min_start_col
-                               and col <= max_end_col):
+        elif row_above == row and (col >= col_before_min
+                                       and col <= col_after_max):
             return True
-        elif max_start_row == row and (col >= min_start_col
-                               and col <=max_end_col):
+        elif row_below == row and (col >= col_before_min
+                                       and col <= col_after_max):
             return True
         return False
 
