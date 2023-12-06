@@ -1,1 +1,0 @@
-﻿namespace day6_wait_for_It;
