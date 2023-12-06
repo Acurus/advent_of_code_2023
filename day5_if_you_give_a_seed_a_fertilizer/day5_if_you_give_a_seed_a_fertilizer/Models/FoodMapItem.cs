@@ -6,7 +6,6 @@ public class FoodMaps
 {
     public string Type { get; set; }
 
-    public long MinExpansion { get; set; }
     public List<FoodMapItem> FoodMap { get; set; }
 }
 

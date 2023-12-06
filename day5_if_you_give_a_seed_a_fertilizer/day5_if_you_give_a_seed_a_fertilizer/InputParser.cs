@@ -41,11 +41,6 @@ public static class InputParser
             }
         }
 
-        foreach (var foodMapTypes in foodMaps)
-        {
-            foodMapTypes.MinExpansion = foodMapTypes.FoodMap.Min(f => f.DestinationRangeStart );
-        }
-
         return foodMaps;
     }
 
@@ -66,25 +61,23 @@ public static class InputParser
     {
         var smallestLocation = long.MaxValue;
 
-        var seedRanges = input[0].Split(" ").Skip(1).ToList();
-        var minExpansion = foodMaps.Min(f => f.MinExpansion);
-        for (var i = 0; i < seedRanges.Count; i += 2)
+        var seedData = input[0]
+            .Split(" ")
+            .Skip(1)
+            .Select(long.Parse)
+            .ToList();
+
+        for (var i = 0; i < seedData.Count; i += 2)
         {
-            var seedNumber = long.Parse(seedRanges.ElementAt(i));
-            if (seedNumber + minExpansion > smallestLocation) continue;
-            var seedRange = long.Parse(seedRanges.ElementAt(i + 1));
+            var seedNumber = seedData.ElementAt(i);
+            var seedRange = seedData.ElementAt(i + 1);
             for (long j = 0; j < seedRange; j++)
             {
-                if (seedNumber + j + minExpansion >= smallestLocation) break;
                 var seed = new Seed(seedNumber + j, foodMaps);
                 if (seed.Location.Value < smallestLocation)
                 {
                     smallestLocation = seed.Location.Value;
                 }
-                // if (seed.Location.EndOfRange > smallestLocation)
-                // {
-                //     break;
-                // }
             }
         }
 
