@@ -9,17 +9,21 @@ public class ExampleTests
     public void TestExampleDataPart1AssertEqual()
     {
         var input = File.ReadAllLines("test_input.txt").ToList();
-        var races = InputParser.Races(input);
-        var actual = Part1.Process(races);
+        var races = InputParser.RacesPart1(input);
+        var actual = Solution.Process(races);
         const int expected = 288;
-        
+
         Assert.Equal(expected, actual);
     }
-    
+
     [Fact]
     public void TestExampleDataPart2AssertEqual()
     {
-        
-        Assert.True(false);
+        var input = File.ReadAllLines("test_input.txt").ToList();
+        var races = InputParser.RacesPart2(input);
+        var actual = Solution.Process(races);
+        const int expected = 71503;
+
+        Assert.Equal(expected, actual);
     }
 }

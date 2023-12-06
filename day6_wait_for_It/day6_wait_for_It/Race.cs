@@ -1,4 +1,1 @@
-﻿using day6_wait_for_It.Models;
-
-namespace day6_wait_for_It;
-
+﻿namespace day6_wait_for_It;

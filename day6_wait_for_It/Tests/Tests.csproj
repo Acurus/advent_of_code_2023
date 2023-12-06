@@ -22,13 +22,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\day6_wait_for_It\day6_wait_for_It.csproj" />
+        <ProjectReference Include="..\day6_wait_for_It\day6_wait_for_It.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="test_input.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Update="test_input.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
