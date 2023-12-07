@@ -4,9 +4,9 @@ namespace day5_if_you_give_a_seed_a_fertilizer;
 
 public static class InputParser
 {
-    public static List<FoodMaps> FoodMaps(List<string> input)
+    public static List<FoodMaps?> FoodMaps(List<string> input)
     {
-        var foodMaps = new List<FoodMaps>();
+        var foodMaps = new List<FoodMaps?>();
         foreach (var line in input)
         {
             if (line.Length == 0) continue;
@@ -18,7 +18,7 @@ public static class InputParser
                 var foodMap = new FoodMaps
                 {
                     Type = line.Split(" ")[0],
-                    FoodMap = new List<FoodMapItem>()
+                    FoodMap = new List<RangeItem>()
                 };
                 foodMaps.Add(foodMap);
             }
@@ -31,7 +31,7 @@ public static class InputParser
 
                 var foodMap = foodMaps.Last();
                 var foodMapLine = line.Split(" ");
-                var foodMapItem = new FoodMapItem
+                var foodMapItem = new RangeItem
                 {
                     DestinationRangeStart = long.Parse(foodMapLine[0]),
                     SourceRangeStart = long.Parse(foodMapLine[1]),
@@ -44,20 +44,25 @@ public static class InputParser
         return foodMaps;
     }
 
-    public static IEnumerable<Seed> SeedsPart1(List<string> input, List<FoodMaps> foodMaps)
+    public static IEnumerable<Seed> SeedsPart1(List<string> input, List<FoodMaps?> foodMaps)
     {
         var seeds = new List<Seed>();
         foreach (var line in input)
         {
             if (!line.StartsWith("seeds:")) return seeds;
             var seedNumbers = line.Split(" ").Select(long.Parse);
-            seeds.AddRange(seedNumbers.Skip(1).Select(seedNumber => new Seed(seedNumber, foodMaps)));
+            seeds.AddRange(seedNumbers.Skip(1).Select(seedNumber => new Seed(new RangeItem()
+            {
+                DestinationRangeStart = 0,
+                SourceRangeStart = seedNumber,
+                RangeLength = 1
+            }, foodMaps)));
         }
 
         return seeds;
     }
 
-    public static long SeedsPart2(List<string> input, List<FoodMaps> foodMaps)
+    public static long SeedsPart2(List<string> input, List<FoodMaps?> foodMaps)
     {
         var smallestLocation = long.MaxValue;
 
@@ -69,20 +74,18 @@ public static class InputParser
 
         for (var i = 0; i < seedData.Count; i += 2)
         {
-            // Calculate per range
-            // split up existing ranges, into new ranges that map to the destination ranges of the level below
-            // then calculate the new ranges for the level below
-            // At the end we end up with a bunch of ranges that we somehow can use.
-            var ranges = new Dictionary<long, Tuple<long, long>>();
             var seedNumber = seedData.ElementAt(i);
             var seedRange = seedData.ElementAt(i + 1);
-            for (long j = 0; j < seedRange; j++)
+            var seedRangeItem = new RangeItem
             {
-                var seed = new Seed(seedNumber + j, foodMaps);
-                if (seed.Location.Value < smallestLocation)
-                {
-                    smallestLocation = seed.Location.Value;
-                }
+                DestinationRangeStart = null,
+                SourceRangeStart = seedNumber,
+                RangeLength = seedRange
+            };
+            var seed = new Seed(seedRangeItem, foodMaps);
+            if (seed.SmallestLocation < smallestLocation && seed.SmallestLocation > 0)
+            {
+                smallestLocation = seed.SmallestLocation;
             }
         }
 

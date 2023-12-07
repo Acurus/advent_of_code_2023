@@ -12,10 +12,11 @@ public class ExampleTests
 
         var input = File.ReadAllLines("test_input.txt").ToList();
         var foodMaps = InputParser.FoodMaps(input);
-        var seeds = InputParser.SeedsPart1(input, foodMaps);
-        Assert.Equal(expected, seeds.Min(s => s.Location.Value));
+        var seeds = InputParser.SeedsPart1(input, foodMaps).ToList();
+        var minimumLocation = seeds.Min(s => s.SmallestLocation);
+        Assert.Equal(expected, minimumLocation);
     }
-    
+
     [Fact]
     public void TestExampleDataPart2AssertEqual()
     {

@@ -6,12 +6,12 @@ public class FoodMaps
 {
     public string Type { get; set; }
 
-    public List<FoodMapItem> FoodMap { get; set; }
+    public List<RangeItem> FoodMap { get; set; }
 }
 
-public class FoodMapItem
+public class RangeItem
 {
-    public long DestinationRangeStart { get; set; }
+    public long? DestinationRangeStart { get; set; }
     public long SourceRangeStart { get; set; }
     public long RangeLength { get; set; }
 }

@@ -2,41 +2,95 @@
 
 public class Seed
 {
-    public Seed(long seedNumber, List<FoodMaps> foodMapTypes)
+    public Seed(RangeItem seedRange, List<FoodMaps?> foodMapTypes)
     {
-        SeedNumber = new Category() { Value = seedNumber };
-        Soil = GetMappedValue(SeedNumber, foodMapTypes.Where(f => f.Type == "seed-to-soil"));
-        Fertilizer = GetMappedValue(Soil, foodMapTypes.Where(f => f.Type == "soil-to-fertilizer"));
-        Water = GetMappedValue(Fertilizer, foodMapTypes.Where(f => f.Type == "fertilizer-to-water"));
-        Light = GetMappedValue(Water, foodMapTypes.Where(f => f.Type == "water-to-light"));
-        Temperature = GetMappedValue(Light, foodMapTypes.Where(f => f.Type == "light-to-temperature"));
-        Humidity = GetMappedValue(Temperature, foodMapTypes.Where(f => f.Type == "temperature-to-humidity"));
-        Location = GetMappedValue(Humidity, foodMapTypes.Where(f => f.Type == "humidity-to-location"));
+        Soil = GetMappedValue(new List<RangeItem> { seedRange },
+            foodMapTypes.FirstOrDefault(f => f?.Type == "seed-to-soil"));
+        Fertilizer = GetMappedValue(Soil, foodMapTypes.FirstOrDefault(f => f?.Type == "soil-to-fertilizer"));
+        Water = GetMappedValue(Fertilizer, foodMapTypes.FirstOrDefault(f => f?.Type == "fertilizer-to-water"));
+        Light = GetMappedValue(Water, foodMapTypes.FirstOrDefault(f => f?.Type == "water-to-light"));
+        Temperature = GetMappedValue(Light, foodMapTypes.FirstOrDefault(f => f?.Type == "light-to-temperature"));
+        Humidity = GetMappedValue(Temperature,
+            foodMapTypes.FirstOrDefault(f => f?.Type == "temperature-to-humidity"));
+        Location = GetMappedValue(Humidity, foodMapTypes.FirstOrDefault(f => f?.Type == "humidity-to-location"));
+        SmallestLocation = Location.Min(l => l.SourceRangeStart);
     }
 
-    private Category SeedNumber { get; set; }
-    private Category Soil { get; set; }
-    private Category Fertilizer { get; set; }
-    private Category Water { get; set; }
-    private Category Light { get; set; }
-    private Category Temperature { get; set; }
-    private Category Humidity { get; set; }
-    public Category Location { get; set; }
+    private List<RangeItem> Soil { get; set; }
+    private List<RangeItem> Fertilizer { get; set; }
+    private List<RangeItem> Water { get; set; }
+    private List<RangeItem> Light { get; set; }
+    private List<RangeItem> Temperature { get; set; }
+    private List<RangeItem> Humidity { get; set; }
+    public List<RangeItem> Location { get; set; }
+    public long SmallestLocation { get; set; }
 
 
-    private static Category GetMappedValue(Category category, IEnumerable<FoodMaps> foodMaps)
+    private static List<RangeItem> GetMappedValue(List<RangeItem> rangeItems, FoodMaps foodMaps)
     {
-        foreach (var foodMap in foodMaps.First().FoodMap)
+        var mappedValues = new List<RangeItem>();
+        foreach (var rangeItem in rangeItems)
         {
-            if (category.Value < foodMap.SourceRangeStart ||
-                category.Value > foodMap.SourceRangeStart + foodMap.RangeLength) continue;
-            var diff = category.Value - foodMap.SourceRangeStart;
-            category.Value = foodMap.DestinationRangeStart + diff;
-            category.EndOfRange = foodMap.DestinationRangeStart + foodMap.RangeLength;
-            return category;
+            foreach (var foodMap in foodMaps.FoodMap)
+            {
+                if (rangeItem.SourceRangeStart >= foodMap.SourceRangeStart &&
+                    rangeItem.SourceRangeStart < foodMap.SourceRangeStart + foodMap.RangeLength)
+                {
+                    // The whole source range is contained in the food map range
+                    var offset = rangeItem.SourceRangeStart - foodMap.SourceRangeStart;
+                    mappedValues.Add(new RangeItem
+                    {
+                        SourceRangeStart = foodMap.DestinationRangeStart + offset ?? 0,
+                        RangeLength = rangeItem.RangeLength
+                    });
+                    break;
+                }
+
+
+                if (rangeItem.SourceRangeStart < foodMap.SourceRangeStart &&
+                    (rangeItem.SourceRangeStart + rangeItem.RangeLength) > foodMap.SourceRangeStart)
+                {
+                    // The source range starts before the food map range and ends inside the food map range
+                    mappedValues.Add(new RangeItem
+                    {
+                        SourceRangeStart = foodMap.DestinationRangeStart ?? 0,
+                        RangeLength = (rangeItem.SourceRangeStart + rangeItem.RangeLength) - foodMap.SourceRangeStart
+                    });
+                    mappedValues.Add(new RangeItem
+                    {
+                        SourceRangeStart = rangeItem.SourceRangeStart,
+                        RangeLength = foodMap.SourceRangeStart - foodMap.SourceRangeStart
+                    });
+                }
+
+                if (rangeItem.SourceRangeStart > foodMap.SourceRangeStart &&
+                    (rangeItem.SourceRangeStart + rangeItem.RangeLength) <
+                    (foodMap.SourceRangeStart + foodMap.RangeLength))
+                {
+                    // The source range starts inside the food map range and ends after the food map range
+                    var offset = rangeItem.SourceRangeStart - foodMap.SourceRangeStart;
+                    mappedValues.Add(new RangeItem
+                    {
+                        SourceRangeStart = foodMap.DestinationRangeStart + offset ?? 0,
+                        RangeLength = (foodMap.SourceRangeStart + foodMap.RangeLength) - rangeItem.SourceRangeStart
+                    });
+                    mappedValues.Add(new RangeItem
+                    {
+                        SourceRangeStart = foodMap.SourceRangeStart + foodMap.RangeLength,
+                        RangeLength = (rangeItem.SourceRangeStart + rangeItem.RangeLength) -
+                                      (foodMap.SourceRangeStart + foodMap.RangeLength)
+                    });
+                }
+            }
+
+            if (mappedValues.Count == 0)
+            {
+                // The whole destination range is outside the food map range
+                mappedValues.Add(rangeItem);
+            }
         }
 
-        return category;
+        return mappedValues;
     }
 
     public class Category
