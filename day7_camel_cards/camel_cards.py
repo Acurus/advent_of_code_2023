@@ -8,7 +8,7 @@ CARD_VALUE_MAP = {"2": 1,
                   "8": 7,
                   "9": 8,
                   "T": 9,
-                  "J": 10,
+                  "J": 0,
                   "Q": 11,
                   "K": 12,
                   "A": 13}
@@ -53,6 +53,15 @@ class Hand:
                 value_counts[card.value] += 1
             else:
                 value_counts[card.value] = 1
+        
+        
+        if value_counts.get("J") == 5:
+            return "fiveOfAKind"
+        
+        if "J" in value_counts:
+            value_counts[max(value_counts, key=lambda k: value_counts[k] if k != 'J' else float('-inf'))] += value_counts["J"]
+            value_counts["J"] = 0
+        
         if 5 in value_counts.values():
             return "fiveOfAKind"
         elif 4 in value_counts.values():
@@ -68,10 +77,6 @@ class Hand:
         else:
             return "highCard"
         
-
-        
-
-
     def __lt__(self, other):
         # < operator
         if HAND_VALUE_MAP[self.type] == HAND_VALUE_MAP[other.type]:
@@ -86,7 +91,7 @@ class Hand:
             return HAND_VALUE_MAP[self.type] < HAND_VALUE_MAP[other.type]
 
 
-def part1(lines: list[str]):
+def solution(lines: list[str]):
     hands = []
     for line in lines:
         line = line.split(" ")
@@ -105,4 +110,4 @@ def part1(lines: list[str]):
 if __name__ == "__main__":
     with open("day7_camel_cards\input.txt", "r") as f:
         lines = f.readlines()
-    print(part1(lines))
+    print(solution(lines))

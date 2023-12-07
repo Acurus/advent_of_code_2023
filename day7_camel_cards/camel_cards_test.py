@@ -8,9 +8,10 @@ TEST_INPUT = [
     "T55J5 684",
     "KK677 28",
     "KTJJT 220",
-    "QQQJA 483" ]
+    "QQQJA 483"]
 SUM_PART1 = 6440
-    
+SUM_PART2 = 5905
+
 
 class TestDay3(unittest.TestCase):
 
@@ -28,36 +29,34 @@ class TestDay3(unittest.TestCase):
 
     def test_typeAssignment(self):
         # Arrange
-        card_string1= "1234Q"
-        card_string2= "11234"
-        card_string3= "11223"
-        card_string4= "11123"
-        card_string5= "11122"
-        card_string6= "11112"           
-        card_string7= "11111"
-
+        card_strings = [
+            "1234Q",
+            "11234",
+            "11223",
+            "11123",
+            "11122",
+            "11112",
+            "11111",
+            "1JJJJ",
+            "JJ73Q"]
 
         bid = "0"
 
         # Act
-        hand1 = Hand(card_string1, bid)
-        hand2 = Hand(card_string2, bid)
-        hand3 = Hand(card_string3, bid)
-        hand4 = Hand(card_string4, bid)
-        hand5 = Hand(card_string5, bid)
-        hand6 = Hand(card_string6, bid)
-        hand7 = Hand(card_string7, bid)
+        hands = []
+        for card_string in card_strings:
+            hands.append(Hand(card_string, bid))
 
-        
         # Assert
-        self.assertEqual(hand1.type, "highCard")
-        self.assertEqual(hand2.type, "onePair")
-        self.assertEqual(hand3.type, "twoPair")
-        self.assertEqual(hand4.type, "threeOfAKind")
-        self.assertEqual(hand5.type, "fullHouse")
-        self.assertEqual(hand6.type, "fourOfAKind")
-        self.assertEqual(hand7.type, "fiveOfAKind")
-
+        self.assertEqual(hands[0].type, "highCard")
+        self.assertEqual(hands[1].type, "onePair")
+        self.assertEqual(hands[2].type, "twoPair")
+        self.assertEqual(hands[3].type, "threeOfAKind")
+        self.assertEqual(hands[4].type, "fullHouse")
+        self.assertEqual(hands[5].type, "fourOfAKind")
+        self.assertEqual(hands[6].type, "fiveOfAKind")
+        self.assertEqual(hands[7].type, "fiveOfAKind")
+        self.assertEqual(hands[8].type, "threeOfAKind")
 
     def test_typecomparison(self):
         # Arrange
@@ -70,27 +69,10 @@ class TestDay3(unittest.TestCase):
         self.assertLess(hands[0], hands[1])
         self.assertGreater(hands[2], hands[0])
 
-    def test_part1(self):
+    def test_part2(self):
         # Arrange
         lines = TEST_INPUT
         # Act
-        res = part1(lines)
+        res = solution(lines)
         # Assert
-        self.assertEqual(res, SUM_PART1)
-
-    def test_highcard_sort(self):
-        # Arrange
-        hands = []
-        input = ["2K975 0",
-                 "2954J 0",
-                 "T5QK4 0",]
-        
-        # Act
-        for hand in input:
-            card_string, bid = hand.split(" ")
-            hands.append(Hand(card_string, bid))
-        hands.sort(reverse=True)
-        for i in hands:
-            print(f"{i.type} - {[x.value for x in i.cards]}")
-        # Assert
-        self.assertEqual(hands[0].cards[0].value, "T")
+        self.assertEqual(res, SUM_PART2)
