@@ -69,6 +69,11 @@ public static class InputParser
 
         for (var i = 0; i < seedData.Count; i += 2)
         {
+            // Calculate per range
+            // split up existing ranges, into new ranges that map to the destination ranges of the level below
+            // then calculate the new ranges for the level below
+            // At the end we end up with a bunch of ranges that we somehow can use.
+            var ranges = new Dictionary<long, Tuple<long, long>>();
             var seedNumber = seedData.ElementAt(i);
             var seedRange = seedData.ElementAt(i + 1);
             for (long j = 0; j < seedRange; j++)
@@ -80,7 +85,6 @@ public static class InputParser
                 }
             }
         }
-
 
         return smallestLocation;
     }
