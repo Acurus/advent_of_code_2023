@@ -13,7 +13,7 @@ public class Seed
         Humidity = GetMappedValue(Temperature,
             foodMapTypes.FirstOrDefault(f => f?.Type == "temperature-to-humidity"));
         Location = GetMappedValue(Humidity, foodMapTypes.FirstOrDefault(f => f?.Type == "humidity-to-location"));
-        SmallestLocation = Location.Min(l => l.SourceRangeStart);
+        SmallestLocation = Location.OrderBy(l => l.SourceStart).First();
     }
 
     private List<RangeItem> Soil { get; set; }
@@ -23,7 +23,7 @@ public class Seed
     private List<RangeItem> Temperature { get; set; }
     private List<RangeItem> Humidity { get; set; }
     public List<RangeItem> Location { get; set; }
-    public long SmallestLocation { get; set; }
+    public RangeItem SmallestLocation { get; set; }
 
 
     private static List<RangeItem> GetMappedValue(List<RangeItem> rangeItems, FoodMaps foodMaps)
@@ -33,53 +33,56 @@ public class Seed
         {
             foreach (var foodMap in foodMaps.FoodMap)
             {
-                if (rangeItem.SourceRangeStart >= foodMap.SourceRangeStart &&
-                    rangeItem.SourceRangeStart < foodMap.SourceRangeStart + foodMap.RangeLength)
+                if (rangeItem.SourceStart >= foodMap.SourceStart &&
+                    rangeItem.SourceStart < foodMap.SourceStart + foodMap.RangeLength)
                 {
                     // The whole source range is contained in the food map range
-                    var offset = rangeItem.SourceRangeStart - foodMap.SourceRangeStart;
+                    var offset = rangeItem.SourceStart - foodMap.SourceStart;
                     mappedValues.Add(new RangeItem
                     {
-                        SourceRangeStart = foodMap.DestinationRangeStart + offset ?? 0,
+                        SourceStart = foodMap.DestinationStart + offset ?? 0,
                         RangeLength = rangeItem.RangeLength
                     });
                     break;
                 }
 
 
-                if (rangeItem.SourceRangeStart < foodMap.SourceRangeStart &&
-                    (rangeItem.SourceRangeStart + rangeItem.RangeLength) > foodMap.SourceRangeStart)
+                if (rangeItem.SourceStart < foodMap.SourceStart &&
+                    (rangeItem.SourceStart + rangeItem.RangeLength) >= foodMap.SourceStart)
                 {
                     // The source range starts before the food map range and ends inside the food map range
                     mappedValues.Add(new RangeItem
                     {
-                        SourceRangeStart = foodMap.DestinationRangeStart ?? 0,
-                        RangeLength = (rangeItem.SourceRangeStart + rangeItem.RangeLength) - foodMap.SourceRangeStart
+                        SourceStart = foodMap.DestinationStart ?? 0,
+                        RangeLength = (rangeItem.SourceStart + rangeItem.RangeLength) - foodMap.SourceStart
                     });
                     mappedValues.Add(new RangeItem
                     {
-                        SourceRangeStart = rangeItem.SourceRangeStart,
-                        RangeLength = foodMap.SourceRangeStart - foodMap.SourceRangeStart
+                        SourceStart = rangeItem.SourceStart,
+                        RangeLength = foodMap.SourceStart - foodMap.SourceStart
                     });
+                    break;
                 }
 
-                if (rangeItem.SourceRangeStart > foodMap.SourceRangeStart &&
-                    (rangeItem.SourceRangeStart + rangeItem.RangeLength) <
-                    (foodMap.SourceRangeStart + foodMap.RangeLength))
+                if (rangeItem.SourceStart >= foodMap.SourceStart && 
+                    rangeItem.SourceStart <= foodMap.SourceStart + foodMap.RangeLength &&
+                    (rangeItem.SourceStart + rangeItem.RangeLength) >
+                    (foodMap.SourceStart + foodMap.RangeLength))
                 {
                     // The source range starts inside the food map range and ends after the food map range
-                    var offset = rangeItem.SourceRangeStart - foodMap.SourceRangeStart;
+                    var offset = rangeItem.SourceStart - foodMap.SourceStart;
                     mappedValues.Add(new RangeItem
                     {
-                        SourceRangeStart = foodMap.DestinationRangeStart + offset ?? 0,
-                        RangeLength = (foodMap.SourceRangeStart + foodMap.RangeLength) - rangeItem.SourceRangeStart
+                        SourceStart = foodMap.DestinationStart + offset ?? 0,
+                        RangeLength = (foodMap.SourceStart + foodMap.RangeLength) - rangeItem.SourceStart
                     });
                     mappedValues.Add(new RangeItem
                     {
-                        SourceRangeStart = foodMap.SourceRangeStart + foodMap.RangeLength,
-                        RangeLength = (rangeItem.SourceRangeStart + rangeItem.RangeLength) -
-                                      (foodMap.SourceRangeStart + foodMap.RangeLength)
+                        SourceStart = foodMap.SourceStart + foodMap.RangeLength,
+                        RangeLength = (rangeItem.SourceStart + rangeItem.RangeLength) -
+                                      (foodMap.SourceStart + foodMap.RangeLength)
                     });
+                    break;
                 }
             }
 
@@ -93,9 +96,4 @@ public class Seed
         return mappedValues;
     }
 
-    public class Category
-    {
-        public long Value { get; set; }
-        public long EndOfRange { get; set; }
-    }
 }
