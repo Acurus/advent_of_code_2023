@@ -33,8 +33,8 @@ public static class InputParser
                 var foodMapLine = line.Split(" ");
                 var foodMapItem = new RangeItem
                 {
-                    DestinationRangeStart = long.Parse(foodMapLine[0]),
-                    SourceRangeStart = long.Parse(foodMapLine[1]),
+                    DestinationStart = long.Parse(foodMapLine[0]),
+                    SourceStart = long.Parse(foodMapLine[1]),
                     RangeLength = long.Parse(foodMapLine[2])
                 };
                 foodMap.FoodMap.Add(foodMapItem);
@@ -44,18 +44,18 @@ public static class InputParser
         return foodMaps;
     }
 
-    public static IEnumerable<Seed> SeedsPart1(List<string> input, List<FoodMaps?> foodMaps)
+    public static IEnumerable<SeedRange> SeedsPart1(List<string> input, List<FoodMaps?> foodMaps)
     {
-        var seeds = new List<Seed>();
+        var seeds = new List<SeedRange>();
         foreach (var line in input)
         {
             if (!line.StartsWith("seeds:")) return seeds;
             var seedNumbers = line.Split(" ").Select(long.Parse);
-            seeds.AddRange(seedNumbers.Skip(1).Select(seedNumber => new Seed(new RangeItem()
+            seeds.AddRange(seedNumbers.Skip(1).Select(seedNumber => new SeedRange(new RangeItem()
             {
-                DestinationRangeStart = 0,
-                SourceRangeStart = seedNumber,
-                RangeLength = 1
+                DestinationStart = 0,
+                SourceStart = seedNumber,
+                RangeLength = 0
             }, foodMaps)));
         }
 
@@ -78,17 +78,16 @@ public static class InputParser
             var seedRange = seedData.ElementAt(i + 1);
             var seedRangeItem = new RangeItem
             {
-                DestinationRangeStart = null,
-                SourceRangeStart = seedNumber,
+                DestinationStart = null,
+                SourceStart = seedNumber,
                 RangeLength = seedRange
             };
-            var seed = new Seed(seedRangeItem, foodMaps);
-            if (seed.SmallestLocation < smallestLocation && seed.SmallestLocation > 0)
+            var seed = new SeedRange(seedRangeItem, foodMaps);
+            if (seed.SmallestLocation.SourceStart < smallestLocation)
             {
-                smallestLocation = seed.SmallestLocation;
+                smallestLocation = seed.SmallestLocation.SourceStart;
             }
         }
-
         return smallestLocation;
     }
 }

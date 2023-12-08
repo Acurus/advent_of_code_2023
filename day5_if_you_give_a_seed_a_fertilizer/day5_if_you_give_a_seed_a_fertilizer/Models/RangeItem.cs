@@ -11,7 +11,7 @@ public class FoodMaps
 
 public class RangeItem
 {
-    public long? DestinationRangeStart { get; set; }
-    public long SourceRangeStart { get; set; }
+    public long? DestinationStart { get; set; }
+    public long SourceStart { get; set; }
     public long RangeLength { get; set; }
 }

@@ -10,10 +10,10 @@ public class ExampleTests
     {
         const int expected = 35;
 
-        var input = File.ReadAllLines("test_input.txt").ToList();
+        var input = File.ReadAllLines("test_input2.txt").ToList();
         var foodMaps = InputParser.FoodMaps(input);
         var seeds = InputParser.SeedsPart1(input, foodMaps).ToList();
-        var minimumLocation = seeds.Min(s => s.SmallestLocation);
+        var minimumLocation = seeds.Min(s => s.SmallestLocation.SourceStart);
         Assert.Equal(expected, minimumLocation);
     }
 
@@ -22,7 +22,7 @@ public class ExampleTests
     {
         const int expected = 46;
 
-        var input = File.ReadAllLines("test_input.txt").ToList();
+        var input = File.ReadAllLines("test_input2.txt").ToList();
         var foodMaps = InputParser.FoodMaps(input);
         var smallestLocation = InputParser.SeedsPart2(input, foodMaps);
         Assert.Equal(expected, smallestLocation);

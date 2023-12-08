@@ -1,8 +1,8 @@
 ﻿namespace day5_if_you_give_a_seed_a_fertilizer.Models;
 
-public class Seed
+public class SeedRange
 {
-    public Seed(RangeItem seedRange, List<FoodMaps?> foodMapTypes)
+    public SeedRange(RangeItem seedRange, List<FoodMaps?> foodMapTypes)
     {
         Soil = GetMappedValue(new List<RangeItem> { seedRange },
             foodMapTypes.FirstOrDefault(f => f?.Type == "seed-to-soil"));
@@ -34,7 +34,7 @@ public class Seed
             foreach (var foodMap in foodMaps.FoodMap)
             {
                 if (rangeItem.SourceStart >= foodMap.SourceStart &&
-                    rangeItem.SourceStart < foodMap.SourceStart + foodMap.RangeLength)
+                    rangeItem.SourceStart + rangeItem.RangeLength <= foodMap.SourceStart + foodMap.RangeLength)
                 {
                     // The whole source range is contained in the food map range
                     var offset = rangeItem.SourceStart - foodMap.SourceStart;
@@ -48,7 +48,7 @@ public class Seed
 
 
                 if (rangeItem.SourceStart < foodMap.SourceStart &&
-                    (rangeItem.SourceStart + rangeItem.RangeLength) >= foodMap.SourceStart)
+                    (rangeItem.SourceStart + rangeItem.RangeLength - 1) >= foodMap.SourceStart)
                 {
                     // The source range starts before the food map range and ends inside the food map range
                     mappedValues.Add(new RangeItem
@@ -64,8 +64,8 @@ public class Seed
                     break;
                 }
 
-                if (rangeItem.SourceStart >= foodMap.SourceStart && 
-                    rangeItem.SourceStart <= foodMap.SourceStart + foodMap.RangeLength &&
+                if (rangeItem.SourceStart >= foodMap.SourceStart &&
+                    rangeItem.SourceStart <= (foodMap.SourceStart + foodMap.RangeLength) &&
                     (rangeItem.SourceStart + rangeItem.RangeLength) >
                     (foodMap.SourceStart + foodMap.RangeLength))
                 {
@@ -78,7 +78,7 @@ public class Seed
                     });
                     mappedValues.Add(new RangeItem
                     {
-                        SourceStart = foodMap.SourceStart + foodMap.RangeLength,
+                        SourceStart = foodMap.DestinationStart + foodMap.RangeLength ?? 0,
                         RangeLength = (rangeItem.SourceStart + rangeItem.RangeLength) -
                                       (foodMap.SourceStart + foodMap.RangeLength)
                     });
@@ -86,14 +86,12 @@ public class Seed
                 }
             }
 
-            if (mappedValues.Count == 0)
+            if (!mappedValues.Any())
             {
-                // The whole destination range is outside the food map range
                 mappedValues.Add(rangeItem);
             }
         }
 
         return mappedValues;
     }
-
 }
